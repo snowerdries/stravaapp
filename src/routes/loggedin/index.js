@@ -8,23 +8,17 @@
  */
 
 import React from 'react';
-import Home from './Home';
 import Layout from '../../components/Layout';
-import authenticationHelper from '../../core/authenticationHelper';
+import Loggedin from './Loggedin';
+
 
 export default {
 
-  path: '/',
-
+  path: '/loggedin',
   async action() {
-    const loggedInUser = await authenticationHelper.isLoggedIn();
-    if (!loggedInUser) {
-      return { redirect: '/login' };
-    }
-
     return {
       title: 'React Starter Kit',
-      component: <Layout><Home user={loggedInUser} /></Layout>,
+      component: <Layout><Loggedin /></Layout>,
     };
   },
 };

@@ -90,7 +90,7 @@ app.get('/login/google/return',
       const expiresIn = 60 * 60 * 1; // 1 hour
       const token = jwt.sign(req.user, auth.jwt.secret, { expiresIn });
       res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-      res.redirect('/');
+      res.redirect('/loggedin');
     });
 
 //
