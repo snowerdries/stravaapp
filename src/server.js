@@ -73,6 +73,26 @@ app.get('/login/facebook/return',
   },
 );
 
+app.get('/login/google',
+  passport.authenticate('google', { scope: ['profile'] }),
+);
+
+app.get('/user/loggedin', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const user = req.user || {};
+  res.send(user);
+},
+);
+
+app.get('/login/google/return',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+      const expiresIn = 60 * 60 * 1; // 1 hour
+      const token = jwt.sign(req.user, auth.jwt.secret, { expiresIn });
+      res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
+      res.redirect('/');
+    });
+
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
@@ -82,6 +102,7 @@ app.use('/graphql', expressGraphQL(req => ({
   rootValue: { request: req },
   pretty: process.env.NODE_ENV !== 'production',
 })));
+
 
 //
 // Register server-side rendering middleware

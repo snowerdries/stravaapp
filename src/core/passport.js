@@ -18,6 +18,25 @@ import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { User, UserLogin, UserClaim, UserProfile } from '../data/models';
 import { auth as config } from '../config';
 
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+  clientID: config.google.id,
+  clientSecret: config.google.secret,
+  callbackURL: '/login/google/return',
+}, (accessToken, refreshToken, profile, cb) => (
+  cb(null, { googleId: profile.id, name: profile.displayName })
+),
+));
+
 /**
  * Sign in with Facebook.
  */

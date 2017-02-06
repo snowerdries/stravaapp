@@ -11,29 +11,32 @@ import React from 'react';
 import Home from './Home';
 import fetch from '../../core/fetch';
 import Layout from '../../components/Layout';
+import authenticationHelper from '../../core/authenticationHelper';
 
 export default {
 
   path: '/',
 
   async action() {
-    const resp = await fetch('/graphql', {
-      method: 'post',
+    const isLoggedIn = authenticationHelper.isLoggedIn();
+    if (!isLoggedIn) {
+      return { redirect: '/login' };
+    }
+
+    const resp = await fetch('/user/loggedin', {
+      method: 'get',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        query: '{news{title,link,content}}',
-      }),
       credentials: 'include',
     });
-    const { data } = await resp.json();
-    if (!data || !data.news) throw new Error('Failed to load the news feed.');
+
+    const json = await resp.json();
+
     return {
       title: 'React Starter Kit',
-      component: <Layout><Home news={data.news} /></Layout>,
+      component: <Layout><Home user={json} /></Layout>,
     };
   },
-
 };
